@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     int option_char = 0;
     char *hostname = "localhost";
     unsigned short portno = 19121;
-    char *message = "Hello World!!";
+    char *message = "Hello World!!!!";
     int socketfd;
     struct sockaddr_in serv_addr;
     memset(&serv_addr, 0, sizeof(struct sockaddr_in));
@@ -100,12 +100,12 @@ int main(int argc, char **argv)
     }
 
     /* Socket Code Here */
-    socketfd = socket(PF_LOCAL, SOCK_STREAM, 0);
+    socketfd = socket(AF_INET, SOCK_STREAM, 0);
     if(socketfd == -1) {
 	fprintf(stderr, "Error creating socket");
 	exit(1);
     }
-    serv_addr.sin_family = PF_LOCAL;
+    serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(portno);
     /*if(inet_pton(PF_LOCAL, hostname, &serv_addr.sin_addr)<=0) {
         fprintf(stderr, "Invalid address");
@@ -116,6 +116,8 @@ int main(int argc, char **argv)
 	fprintf(stderr, "Connect failed");
 	exit(1);
     }
+    //while(1) {
+
     msgsize = send(socketfd, message, strlen(message), 0);
     if(msgsize != strlen(message)) {
 	fprintf(stderr, "Message sending error");
@@ -127,5 +129,12 @@ int main(int argc, char **argv)
 	fprintf(stderr, "Full message not received");
 	exit(1);
     }
+    char in[2];
+    fscanf(stdin, "%s", in);
+    if(in[0] == 'q') {
+    }
+    //}
+
+    close(socketfd);
     return 0;
 }

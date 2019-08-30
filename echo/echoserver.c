@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
 
 
   /* Socket Code Here */
-    socketfd = socket(PF_LOCAL, SOCK_STREAM, 0);
+    socketfd = socket(AF_INET, SOCK_STREAM, 0);
     if(socketfd == -1) {
 	fprintf(stderr, "Failed to create new socket");
         exit(1);
@@ -84,13 +84,12 @@ int main(int argc, char **argv) {
 	exit(ret);
     }
 
-
-    address.sin_family = PF_LOCAL;
-    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
     address.sin_port = htons(portno);
     ret = bind(socketfd, (struct sockaddr *)&address, sizeof(address));
     if(ret) {
-        fprintf(stderr, "Failed to bind");
+        fprintf(stderr, "Failed to bind: %s\n", strerror(errno));
 	exit(ret);
     }
 
@@ -99,8 +98,9 @@ int main(int argc, char **argv) {
 	fprintf(stderr, "Failed to listen");
 	exit(ret);
     }
-
+    while(1) {
     new_socket = accept(socketfd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
+    //while(1) {
     recvsize = recv(new_socket, buffer, 16, 0);
     if(recvsize < 0) {
 	fprintf(stderr, "Error receiving message");
@@ -108,8 +108,12 @@ int main(int argc, char **argv) {
     buffer[15] = 0;
     fprintf(stdout, "%s\n", buffer);
     sendsize = send(new_socket, buffer, 16, 0);
+    //}
     if(sendsize != 16) {
 	fprintf(stderr, "Error sending resposne");
     }
+    close(new_socket);
+    }
+    close(socketfd);
     return 0;
 }

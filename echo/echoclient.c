@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     int option_char = 0;
     char *hostname = "localhost";
     unsigned short portno = 19121;
-    char *message = "Hello World!!!!";
+    char *message = "Hello Worl";
     int socketfd;
     struct sockaddr_in serv_addr;
     memset(&serv_addr, 0, sizeof(struct sockaddr_in));
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     adinf.ai_addr = NULL;
     adinf.ai_next = NULL;
     int ret;
-    char buffer[16];
+    char buffer[17];
     ssize_t msgsize;
 
     struct addrinfo *result;
@@ -107,17 +107,11 @@ int main(int argc, char **argv)
     }
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(portno);
-    /*if(inet_pton(PF_LOCAL, hostname, &serv_addr.sin_addr)<=0) {
-        fprintf(stderr, "Invalid address");
-        exit(1);
-    }*/
     ret = connect(socketfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
     if(ret) {
 	fprintf(stderr, "Connect failed");
 	exit(1);
     }
-    //while(1) {
-
     msgsize = send(socketfd, message, strlen(message), 0);
     if(msgsize != strlen(message)) {
 	fprintf(stderr, "Message sending error");
@@ -125,15 +119,8 @@ int main(int argc, char **argv)
     }
 
     msgsize = recv(socketfd, buffer, 16, 0);
-    if(msgsize != 16) {
-	fprintf(stderr, "Full message not received");
-	exit(1);
-    }
-    char in[2];
-    fscanf(stdin, "%s", in);
-    if(in[0] == 'q') {
-    }
-    //}
+    buffer[msgsize]=0;
+    fprintf(stdout, "%s", buffer);
 
     close(socketfd);
     return 0;

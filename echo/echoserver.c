@@ -37,8 +37,8 @@ int main(int argc, char **argv) {
   int opt = 1, ret = 0;
   struct sockaddr_in address;
   int addrlen = sizeof(address);
-  char buffer[16];
-  ssize_t recvsize, sendsize;
+  char buffer[17];
+  ssize_t recvsize;
   
   // Parse and set command line arguments
   while ((option_char = getopt_long(argc, argv, "p:m:hx", gLongOptions, NULL)) != -1) {
@@ -102,16 +102,13 @@ int main(int argc, char **argv) {
     new_socket = accept(socketfd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
     //while(1) {
     recvsize = recv(new_socket, buffer, 16, 0);
+    fprintf(stdout,"Receive size: %ld\n", recvsize);
     if(recvsize < 0) {
 	fprintf(stderr, "Error receiving message");
     }
-    buffer[15] = 0;
+    buffer[recvsize] = 0;
     fprintf(stdout, "%s\n", buffer);
-    sendsize = send(new_socket, buffer, 16, 0);
-    //}
-    if(sendsize != 16) {
-	fprintf(stderr, "Error sending resposne");
-    }
+    send(new_socket, buffer, recvsize, 0);
     close(new_socket);
     }
     close(socketfd);

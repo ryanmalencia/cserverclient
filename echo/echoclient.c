@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     int option_char = 0;
     char *hostname = "localhost";
     unsigned short portno = 19121;
-    char *message = "Hello Worl";
+    char *message = "Hello World!!";
     int socketfd;
     struct sockaddr_in serv_addr;
     memset(&serv_addr, 0, sizeof(struct sockaddr_in));
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     adinf.ai_addr = NULL;
     adinf.ai_next = NULL;
     int ret;
-    char buffer[17];
+    char buffer[16];
     ssize_t msgsize;
 
     struct addrinfo *result;
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 
     msgsize = recv(socketfd, buffer, 16, 0);
     buffer[msgsize]=0;
-    fprintf(stdout, "%s", buffer);
+    fprintf(stdout, "%s\n", buffer);
 
     close(socketfd);
     return 0;

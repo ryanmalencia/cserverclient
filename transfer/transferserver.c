@@ -31,6 +31,14 @@ int main(int argc, char **argv)
     int option_char;
     int portno = 19121;             /* port to listen on */
     char *filename = "6200.txt"; /* file to transfer */
+    int socketfd = 0, new_socket = 0;
+    int opt = 1, ret = 0;
+    struct sockaddr_in address;
+    int addrlen = sizeof(address);
+    char buffer[16];
+    ssize_t sendsize = 0;
+    memset(&address, 0, sizeof(struct sockaddr_in));
+    memset(buffer, 0, 16*sizeof(char));
 
     setbuf(stdout, NULL); // disable buffering
 
@@ -69,5 +77,31 @@ int main(int argc, char **argv)
     }
 
     /* Socket Code Here */
+    socketfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(socketfd == -1) {
+        fprintf(stderr, "Failed to create new socket: %s\n", strerror(errno));
+	exit(socketfd);
+    }
+    
+    ret = setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
 
+    if(ret) {
+        fprintf(stderr, "Unable to set socket options: %s\n", strerror(errno));
+	exit(ret);
+    }
+
+    ret = listen(socketfd, 3);
+    if(ret) {
+	fprintf(stderr, "Failed to listen: %s\n", strerror(errno));
+	exit(ret);
+    }
+    
+    while(1) {
+	new_socket = accept(socketfd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
+	ssize_t totalsent = 0; 
+	sendsize = send(new_socket, buffer, 16, 0);
+	if(sendsize < 0) {fprintf(stderr, "Error receiving message\n");continue;};
+        totalsent += sendsize;
+
+    }
 }

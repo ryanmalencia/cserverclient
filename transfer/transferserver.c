@@ -35,10 +35,10 @@ int main(int argc, char **argv)
     int opt = 1, ret = 0;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
-    char buffer[16];
+    char buffer[1024];
     ssize_t sendsize = 0;
     memset(&address, 0, sizeof(struct sockaddr_in));
-    memset(buffer, 0, 16*sizeof(char));
+    memset(buffer, 0, 1024*sizeof(char));
 
     setbuf(stdout, NULL); // disable buffering
 
@@ -99,7 +99,7 @@ int main(int argc, char **argv)
     while(1) {
 	new_socket = accept(socketfd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
 	ssize_t totalsent = 0; 
-	sendsize = send(new_socket, buffer, 16, 0);
+	sendsize = send(new_socket, buffer, 1024, 0);
 	if(sendsize < 0) {fprintf(stderr, "Error receiving message\n");continue;};
         totalsent += sendsize;
 

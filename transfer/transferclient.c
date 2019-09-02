@@ -35,6 +35,12 @@ int main(int argc, char **argv)
     char *hostname = "localhost";
     unsigned short portno = 19121;
     char *filename = "cs6200.txt";
+    int socketfd = 0;
+    int ret = 0;
+    struct sockaddr_in serv_addr;
+    memset(&serv_addr, 0, sizeof(struct sockaddr_in));
+    char buffer[1024];
+    memset(buffer, 0, 1024*sizeof(char));
 
     setbuf(stdout, NULL);
 
@@ -81,4 +87,17 @@ int main(int argc, char **argv)
     }
 
     /* Socket Code Here */
+    socketfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(socketfd == -1) {
+	fprintf(stderr, "Error creating socket");
+	exit(socketfd);
+    }
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(portno);
+    ret = connect(socketfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+    if(ret) {
+	fprintf(stderr, "Connect failed");
+	exit(ret);
+    }
+
 }

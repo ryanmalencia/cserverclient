@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/types.h>
+#include <fcntl.h>
 
 #define BUFSIZE 1219
 
@@ -35,12 +36,13 @@ int main(int argc, char **argv)
     char *hostname = "localhost";
     unsigned short portno = 19121;
     char *filename = "cs6200.txt";
-    int socketfd = 0;
+    int socketfd = 0, outputfd = 0;
     int ret = 0;
     struct sockaddr_in serv_addr;
     memset(&serv_addr, 0, sizeof(struct sockaddr_in));
     char buffer[1024];
     memset(buffer, 0, 1024*sizeof(char));
+    ssize_t msgsize = 0;
 
     setbuf(stdout, NULL);
 
@@ -99,5 +101,10 @@ int main(int argc, char **argv)
 	fprintf(stderr, "Connect failed");
 	exit(ret);
     }
-
+    outputfd = open("test.txt", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    while( (msgsize = recv(socketfd, buffer, 1024, 0)) != 0 && outputfd != 0) {
+	buffer[msgsize] = 0;
+	
+    }
+    return 0;
 }

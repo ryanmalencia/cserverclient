@@ -104,7 +104,8 @@ int main(int argc, char **argv)
     outputfd = open("test.txt", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     while( (msgsize = recv(socketfd, buffer, 1024, 0)) != 0 && outputfd != 0) {
 	buffer[msgsize] = 0;
-	
+	write(outputfd, buffer, msgsize);
     }
+    close(outputfd);
     return 0;
 }

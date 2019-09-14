@@ -16,4 +16,7 @@
 #include <sys/stat.h>
 #include <netinet/in.h>
 
+
+#define BUFSIZE 1219
+
  #endif // __GF_STUDENT_H__

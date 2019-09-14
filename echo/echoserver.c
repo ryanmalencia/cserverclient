@@ -78,7 +78,8 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    ret = setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
+//    ret = setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
+    ret = setsockopt(socketfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     if(ret) {
 	fprintf(stderr, "Unable to set socket options");
 	exit(ret);
